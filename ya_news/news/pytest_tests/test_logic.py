@@ -58,7 +58,7 @@ def test_user_cant_delete_comment_another_user(news, author_client2, comment1):
 @pytest.mark.django_db
 def test_author_can_edit_comment(news, author_client1, comment1):
     url = reverse('news:edit', args=(comment1.id,))
-    response = author_client1.post(url, data=TEXT_COMMENT)
+    author_client1.post(url, data=TEXT_COMMENT)
     comment1.refresh_from_db()
     assert comment1.text == TEXT_COMMENT.get('text')
 
