@@ -1,29 +1,23 @@
-import pytest
-from datetime import datetime
-
-from django.urls import reverse
 from http import HTTPStatus
+
+import pytest
+from django.urls import reverse
 from pytest_django.asserts import assertRedirects
 
-now = datetime.now()
-
-
-@pytest.mark.parametrize(
-    'name',
-    ('news:home', 'users:login', 'users:logout', 'users:signup')
-)
-@pytest.mark.django_db
-def test_pages_availability_for_anonymous_user(client, name):
-    url = reverse(name)
-    response = client.get(url)
-    assert response.status_code == HTTPStatus.OK
-
 
 @pytest.mark.django_db
-def test_pages_news_availability_for_anonymous_user(client, news):
-    url = reverse('news:detail', args=(news.id,))
-    response = client.get(url)
-    assert response.status_code == HTTPStatus.OK
+def test_pages_availability_for_anonymous_user(
+        client,
+        url_home,
+        url_detail,
+        url_login,
+        url_logout,
+        url_signup
+):
+    urls = (url_home, url_detail, url_login, url_logout, url_signup)
+    for url in urls:
+        response = client.get(url)
+        assert response.status_code == HTTPStatus.OK
 
 
 @pytest.mark.parametrize(
@@ -42,7 +36,7 @@ def test_user_edit_and_delete_comment(comment1, author_client1, name, news):
     ('news:edit', 'news:delete')
 )
 @pytest.mark.django_db
-def test_anonymous_user_redirect_upon_attempt_edit_and_delete_commnet(
+def test_anonymous_user_redirect_upon_attempt_edit_and_delete_comment(
         client,
         name,
         news

@@ -24,21 +24,22 @@ class TestContent(TestCase):
             author=cls.author
         )
 
-    def test_create_note_page_contains_form(self):
-        url = reverse('notes:add')
-        response = self.author_client.get(url)
-        self.assertIn('form', response.context)
-
-    def test_edit_note_page_contains_form(self):
-        url = reverse('notes:edit', args=(self.note.slug,))
-        response = self.author_client.get(url)
-        self.assertIn('form', response.context)
+    def test_create_and_edit_note_page_contains_form(self):
+        urls = (
+            ('notes:add', None),
+            ('notes:edit', (self.note.slug,))
+        )
+        for name, args in urls:
+            with self.subTest(name=name):
+                url = reverse(name, args=args)
+                response = self.author_client.get(url)
+                self.assertIn('form', response.context)
 
     def test_note_in_list_for_author(self):
         url = reverse('notes:list')
         response = self.author_client.get(url)
-        object_list = response.context['object_list']
-        self.assertIn(self.note, object_list)
+        object_context = response.context['object_list']
+        self.assertIn(self.note, object_context)
 
     def test_note_not_in_list_for_another_user(self):
         url = reverse('notes:list')
