@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 
+from notes.forms import NoteForm
 from notes.models import Note
 
 User = get_user_model()
@@ -33,6 +34,7 @@ class TestContent(TestCase):
             with self.subTest(name=name):
                 url = reverse(name, args=args)
                 response = self.author_client.get(url)
+                isinstance('form', NoteForm)
                 self.assertIn('form', response.context)
 
     def test_note_in_list_for_author(self):
@@ -44,5 +46,5 @@ class TestContent(TestCase):
     def test_note_not_in_list_for_another_user(self):
         url = reverse('notes:list')
         response = self.reader_client.get(url)
-        object_list = response.context['object_list']
-        self.assertIsNot(self.note, object_list)
+        object_context = response.context['object_list']
+        self.assertIsNot(self.note, object_context)

@@ -1,10 +1,8 @@
 import pytest
-from datetime import datetime
 
 from django.conf import settings
 
-
-now = datetime.now()
+from news.forms import CommentForm
 
 
 @pytest.mark.django_db
@@ -25,7 +23,12 @@ def test_news_order(client, news, url_home):
 
 
 @pytest.mark.django_db
-def test_comment_order(client, comment1, comment2, news, url_detail):
+def test_comment_order(
+        client, first_comment,
+        second_comment,
+        news,
+        url_detail
+):
     response = client.get(url_detail)
     news = response.context['news']
     all_comments = news.comment_set.all()
@@ -33,8 +36,9 @@ def test_comment_order(client, comment1, comment2, news, url_detail):
 
 
 @pytest.mark.django_db
-def test_anonymous_client_has_no_form(author_client1, news, url_detail):
-    response = author_client1.get(url_detail)
+def test_anonymous_client_has_no_form(first_author_client, news, url_detail):
+    response = first_author_client.get(url_detail)
+    isinstance('form', CommentForm)
     assert 'form' in response.context
 
 
