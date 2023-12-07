@@ -1,11 +1,9 @@
 from datetime import datetime, timedelta
 
 import pytest
-
 from django.conf import settings
 from django.test import Client
 from django.urls import reverse
-
 
 from news.models import Comment, News
 
@@ -19,7 +17,7 @@ def first_author(django_user_model):
 
 
 @pytest.fixture
-def first_author_client(first_author):
+def author_create_comment_client(first_author):
     client = Client()
     client.force_login(first_author)
     return client
@@ -31,7 +29,7 @@ def second_author(django_user_model):
 
 
 @pytest.fixture
-def second_author_client(second_author):
+def reader_news_client(second_author):
     client = Client()
     client.force_login(second_author)
     return client

@@ -34,8 +34,9 @@ class TestContent(TestCase):
             with self.subTest(name=name):
                 url = reverse(name, args=args)
                 response = self.author_client.get(url)
-                isinstance('form', NoteForm)
+                form = response.context.get('form')
                 self.assertIn('form', response.context)
+                self.assertIsInstance(form, NoteForm)
 
     def test_note_in_list_for_author(self):
         url = reverse('notes:list')

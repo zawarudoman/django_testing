@@ -1,5 +1,4 @@
 import pytest
-
 from django.conf import settings
 
 from news.forms import CommentForm
@@ -36,10 +35,15 @@ def test_comment_order(
 
 
 @pytest.mark.django_db
-def test_anonymous_client_has_no_form(first_author_client, news, url_detail):
-    response = first_author_client.get(url_detail)
-    isinstance('form', CommentForm)
+def test_anonymous_client_has_no_form(
+        author_create_comment_client,
+        news,
+        url_detail
+):
+    response = author_create_comment_client.get(url_detail)
+    form = response.context.get('form')
     assert 'form' in response.context
+    assert isinstance(form, CommentForm)
 
 
 @pytest.mark.django_db

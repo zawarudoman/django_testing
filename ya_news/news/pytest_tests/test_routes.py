@@ -9,6 +9,7 @@ from pytest_django.asserts import assertRedirects
     'name',
     (
         pytest.lazy_fixture('url_home'),
+        pytest.lazy_fixture('url_detail'),
         pytest.lazy_fixture('url_login'),
         pytest.lazy_fixture('url_logout'),
         pytest.lazy_fixture('url_signup')
@@ -30,11 +31,11 @@ def test_pages_availability_for_anonymous_user(client, name):
 @pytest.mark.django_db
 def test_user_edit_and_delete_comment(
         first_comment,
-        first_author_client,
+        author_create_comment_client,
         news,
         name
 ):
-    response = first_author_client.get(name)
+    response = author_create_comment_client.get(name)
     assert response.status_code == HTTPStatus.OK
 
 
@@ -67,9 +68,9 @@ def test_anonymous_user_redirect_upon_attempt_edit_and_delete_comment(
 @pytest.mark.django_db
 def test_anonymous_user_redirect_upon_attempt_edit_and_delete_commnet(
         first_comment,
-        second_author_client,
+        reader_news_client,
         news,
         name
 ):
-    response = second_author_client.get(name)
+    response = reader_news_client.get(name)
     assert response.status_code == HTTPStatus.NOT_FOUND
